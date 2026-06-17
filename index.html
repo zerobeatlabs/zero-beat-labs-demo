@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ZeroBeatLabs — Demos</title>
+    <meta name="description" content="Interactive demonstrations of ZeroBeatLabs workflows." />
+    <link rel="canonical" href="https://demo.zerobeatlabs.org/" />
+    <meta name="theme-color" content="#16181d" />
+    <style>
+      :root {
+        --ink: #16181d; --muted: #474e59; --accent: #1d4ed8; --accent-strong: #1638a8;
+        --border: #d7dce3; --surface: #f5f7fa;
+        --mono: ui-monospace, "Cascadia Code", Consolas, monospace;
+        --sans: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      }
+      * { box-sizing: border-box; }
+      body { margin: 0; font-family: var(--sans); color: var(--ink); line-height: 1.6; }
+      .wrap { max-width: 48rem; margin: 0 auto; padding: 0 1.5rem; }
+      .site-header { background: #16181d; color: #f5f7fa; }
+      .site-header .wrap { display: flex; justify-content: space-between; align-items: baseline; padding: 1rem 1.5rem; }
+      .site-name { font-family: var(--mono); font-weight: 700; color: #fff; text-decoration: none; }
+      .site-header a.back { color: #f5f7fa; text-decoration: none; font-size: 0.95rem; }
+      main { padding: 3rem 0; }
+      .eyebrow { font-family: var(--mono); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent-strong); margin: 0 0 0.5rem; }
+      h1 { font-size: clamp(1.8rem, 4vw, 2.4rem); margin: 0 0 0.75rem; }
+      .lede { font-size: 1.15rem; color: var(--muted); max-width: 55ch; }
+      .card { display: block; margin-top: 2rem; padding: 1.5rem; border: 1px solid var(--border); border-radius: 8px; text-decoration: none; color: inherit; background: var(--surface); }
+      .card:hover { border-color: var(--accent); }
+      .card h2 { margin: 0 0 0.4rem; font-size: 1.2rem; color: var(--accent-strong); }
+      .card p { margin: 0; color: var(--muted); }
+      footer { border-top: 1px solid var(--border); padding: 1.5rem 0; color: var(--muted); font-size: 0.9rem; }
+      a { color: var(--accent); }
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="wrap">
+        <a class="site-name" href="https://zerobeatlabs.org">ZeroBeatLabs</a>
+        <a class="back" href="https://zerobeatlabs.org">&larr; Main site</a>
+      </div>
+    </header>
+    <main>
+      <div class="wrap">
+        <p class="eyebrow">Interactive demos</p>
+        <h1>See the workflow run, not just read about it.</h1>
+        <p class="lede">Live, in-browser demonstrations of ZeroBeatLabs methods. All data is synthetic.</p>
+        <a class="card" href="/reconcile/">
+          <h2>Reconcile &rarr;</h2>
+          <p>Edit sanitized ticket and uptime exports and watch a leadership report recount itself from the rows. The honesty layer flags any total that stops adding up.</p>
+        </a>
+      </div>
+    </main>
+    <footer>
+      <div class="wrap">
+        <p>A ZeroBeatLabs project by <a href="https://samjolley.com">Sam Jolley</a></p>
+      </div>
+    </footer>
+  </body>
+</html>

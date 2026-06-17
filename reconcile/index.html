@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Reconcile — live IT operations report demo | ZeroBeatLabs</title>
+    <meta
+      name="description"
+      content="Interactive demo: paste sanitized ticket and uptime exports and watch every figure recount live. The honesty layer flags any total that stops adding up — the difference between a defensible report and a generic AI summary."
+    />
+    <link rel="canonical" href="https://demo.zerobeatlabs.org/reconcile/" />
+    <meta name="theme-color" content="#16181d" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Reconcile — live IT operations report demo" />
+    <meta
+      property="og:description"
+      content="Edit synthetic exports and watch every number recount from the rows. Nothing is typed by hand; the verification panel turns red the instant a total stops reconciling."
+    />
+    <meta property="og:url" content="https://demo.zerobeatlabs.org/reconcile/" />
+    <meta property="og:site_name" content="ZeroBeatLabs" />
+    <style>
+      :root {
+        --color-bg: #ffffff;
+        --color-surface: #f5f7fa;
+        --color-ink: #16181d;
+        --color-ink-muted: #474e59;
+        --color-ink-inverse: #f5f7fa;
+        --color-header: #16181d;
+        --color-accent: #1d4ed8;
+        --color-accent-strong: #1638a8;
+        --color-border: #d7dce3;
+        --color-focus: #1638a8;
+        --color-pass: #15803d;
+        --color-pass-bg: #ecfdf3;
+        --color-fail: #b42318;
+        --color-fail-bg: #fef3f2;
+        --color-warn: #b54708;
+        --color-warn-bg: #fffaeb;
+        --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        --font-mono: ui-monospace, "Cascadia Code", Consolas, "Liberation Mono", monospace;
+        --leading-body: 1.6;
+        --space-1: 0.5rem;
+        --space-2: 1rem;
+        --space-3: 1.5rem;
+        --space-4: 2.5rem;
+        --radius: 6px;
+      }
+      *, *::before, *::after { box-sizing: border-box; }
+      body {
+        margin: 0;
+        background: var(--color-bg);
+        color: var(--color-ink);
+        font-family: var(--font-sans);
+        font-size: 1.0625rem;
+        line-height: var(--leading-body);
+        -webkit-font-smoothing: antialiased;
+      }
+      a { color: var(--color-accent); text-underline-offset: 0.15em; }
+      a:hover { color: var(--color-accent-strong); }
+      :focus-visible { outline: 3px solid var(--color-focus); outline-offset: 2px; border-radius: 2px; }
+      h1, h2, h3 { line-height: 1.2; letter-spacing: -0.01em; }
+      .wrap { max-width: 78rem; margin: 0 auto; padding: 0 var(--space-3); }
+
+      .site-header { background: var(--color-header); color: var(--color-ink-inverse); }
+      .site-header .wrap {
+        display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between;
+        gap: var(--space-2); padding: var(--space-2) var(--space-3);
+      }
+      .site-name { font-family: var(--font-mono); font-weight: 700; color: #fff; text-decoration: none; letter-spacing: 0.02em; }
+      .site-header nav a { color: var(--color-ink-inverse); text-decoration: none; font-size: 0.95rem; }
+      .site-header nav a:hover { color: #fff; text-decoration: underline; }
+
+      .hero { padding: var(--space-4) 0 var(--space-3); }
+      .eyebrow {
+        font-family: var(--font-mono); font-size: 0.8rem; text-transform: uppercase;
+        letter-spacing: 0.08em; color: var(--color-accent-strong); margin: 0 0 var(--space-1);
+      }
+      .hero h1 { font-size: clamp(1.9rem, 4.5vw, 2.7rem); margin: 0 0 var(--space-2); max-width: 22ch; }
+      .lede { font-size: 1.2rem; color: var(--color-ink-muted); max-width: 60ch; margin: 0; }
+
+      .synthetic-banner {
+        display: flex; gap: var(--space-1); align-items: center; flex-wrap: wrap;
+        margin: var(--space-3) 0 0; padding: 0.6em 0.9em; border-radius: var(--radius);
+        background: var(--color-warn-bg); color: var(--color-warn);
+        border: 1px solid #fec84b; font-size: 0.92rem;
+      }
+      .synthetic-banner strong { font-family: var(--font-mono); }
+
+      .workbench { display: grid; gap: var(--space-3); padding-bottom: var(--space-4); }
+      @media (min-width: 1000px) { .workbench { grid-template-columns: minmax(360px, 0.85fr) 1.15fr; align-items: start; } }
+
+      .panel { border: 1px solid var(--color-border); border-radius: var(--radius); background: var(--color-bg); }
+      .panel > h2 {
+        margin: 0; padding: var(--space-2) var(--space-3); font-size: 1.05rem;
+        border-bottom: 1px solid var(--color-border); background: var(--color-surface);
+        border-radius: var(--radius) var(--radius) 0 0;
+      }
+      .panel-body { padding: var(--space-3); }
+
+      .field { margin-bottom: var(--space-3); }
+      .field:last-child { margin-bottom: 0; }
+      .field label {
+        display: block; font-family: var(--font-mono); font-size: 0.8rem; text-transform: uppercase;
+        letter-spacing: 0.06em; color: var(--color-ink-muted); margin-bottom: 0.35em;
+      }
+      textarea {
+        width: 100%; font-family: var(--font-mono); font-size: 0.82rem; line-height: 1.5;
+        color: var(--color-ink); background: var(--color-surface);
+        border: 1px solid var(--color-border); border-radius: var(--radius); padding: 0.7em;
+        resize: vertical; white-space: pre; tab-size: 2;
+      }
+      #tickets-input { height: 17rem; }
+      #uptime-input { height: 9rem; }
+
+      .controls { display: flex; flex-wrap: wrap; gap: var(--space-1); margin-top: var(--space-1); }
+      .button {
+        font: inherit; font-weight: 600; cursor: pointer; padding: 0.6em 1.1em;
+        border-radius: var(--radius); border: 2px solid var(--color-accent);
+        background: var(--color-accent); color: #fff;
+      }
+      .button:hover { background: var(--color-accent-strong); border-color: var(--color-accent-strong); }
+      .button.secondary { background: var(--color-bg); color: var(--color-accent); }
+      .button.secondary:hover { background: var(--color-surface); color: var(--color-accent-strong); }
+
+      .callout {
+        margin-top: var(--space-3); padding: var(--space-2) var(--space-3); border-radius: var(--radius);
+        background: var(--color-surface); border-left: 4px solid var(--color-accent);
+        font-size: 0.95rem; color: var(--color-ink-muted);
+      }
+      .callout strong { color: var(--color-ink); }
+
+      .report-status {
+        display: flex; align-items: center; gap: 0.5em; flex-wrap: wrap;
+        margin: 0 0 var(--space-3); padding: 0.7em 0.95em; border-radius: var(--radius);
+        font-weight: 600; font-size: 0.95rem;
+      }
+      .report-status.pass { background: var(--color-pass-bg); color: var(--color-pass); border: 1px solid #abefc6; }
+      .report-status.fail { background: var(--color-fail-bg); color: var(--color-fail); border: 1px solid #fda29b; }
+
+      .report h3 {
+        font-size: 0.82rem; font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.06em;
+        color: var(--color-accent-strong); margin: var(--space-3) 0 var(--space-1);
+      }
+      .report h3:first-child { margin-top: 0; }
+      .exec p { margin: 0 0 0.6em; }
+      .exec .muted { color: var(--color-ink-muted); font-size: 0.92rem; }
+
+      table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+      th, td { text-align: left; padding: 0.4em 0.6em; border-bottom: 1px solid var(--color-border); }
+      th { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-ink-muted); }
+      td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+      td.src { font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-ink-muted); }
+      .grid2 { display: grid; gap: var(--space-3); }
+      @media (min-width: 560px) { .grid2 { grid-template-columns: 1fr 1fr; } }
+
+      .verify td.status { font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700; }
+      tr.pass td.status { color: var(--color-pass); }
+      tr.fail td.status { color: var(--color-fail); }
+      tr.fail td { background: var(--color-fail-bg); }
+
+      .site-footer {
+        border-top: 1px solid var(--color-border); padding: var(--space-3) 0;
+        color: var(--color-ink-muted); font-size: 0.9rem;
+      }
+      .noscript { padding: var(--space-3); background: var(--color-warn-bg); color: var(--color-warn); }
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="wrap">
+        <a class="site-name" href="https://zerobeatlabs.org">ZeroBeatLabs</a>
+        <nav aria-label="Demo navigation">
+          <a href="https://zerobeatlabs.org/#sprint">The IT Reporting Sprint &rarr;</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="wrap">
+          <p class="eyebrow">Live demo — the honesty layer</p>
+          <h1>Watch a leadership report recount itself from the raw exports.</h1>
+          <p class="lede">
+            Edit the sanitized ticket and uptime exports on the left. Every figure on the
+            right is recounted from the rows in real time. Nothing is typed by hand, and the
+            verification panel turns red the instant a total stops adding up.
+          </p>
+          <p class="synthetic-banner">
+            <strong>SYNTHETIC DATA</strong>
+            <span>Fictional "Northstar Field Services." No real client, no production system. Edit freely.</span>
+          </p>
+        </div>
+      </section>
+
+      <noscript>
+        <div class="wrap"><p class="noscript">This demo needs JavaScript to recount the report live.</p></div>
+      </noscript>
+
+      <div class="wrap workbench">
+        <section class="panel" aria-labelledby="inputs-heading">
+          <h2 id="inputs-heading">Sanitized exports</h2>
+          <div class="panel-body">
+            <div class="field">
+              <label for="tickets-input">tickets.csv</label>
+              <textarea id="tickets-input" spellcheck="false" aria-label="Tickets CSV export"></textarea>
+            </div>
+            <div class="field">
+              <label for="uptime-input">uptime.csv</label>
+              <textarea id="uptime-input" spellcheck="false" aria-label="Uptime CSV export"></textarea>
+            </div>
+            <div class="controls">
+              <button class="button" id="reconcile-btn" type="button">Reconcile</button>
+              <button class="button secondary" id="tamper-btn" type="button">Break a total</button>
+              <button class="button secondary" id="reset-btn" type="button">Reset data</button>
+            </div>
+            <div class="callout">
+              <strong>Why this matters:</strong> a generic AI summary will happily print a total that
+              does not match its own source rows. This workflow recounts every number and
+              <strong>shows the gap in red</strong> &mdash; that is the difference between a report you
+              can defend and one you have to double-check by hand.
+            </div>
+          </div>
+        </section>
+
+        <section class="panel report" aria-labelledby="report-heading" aria-live="polite">
+          <h2 id="report-heading">Reconciled report</h2>
+          <div class="panel-body">
+            <div id="report-status" class="report-status pass" role="status"></div>
+            <div id="report-out"></div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap">
+        <p>
+          A ZeroBeatLabs demo &middot; method from the
+          <a href="https://zerobeatlabs.org/#proof">public synthetic demonstration</a> &middot;
+          built by <a href="https://samjolley.com">Sam Jolley</a>
+        </p>
+      </div>
+    </footer>
+
+    <script type="module">
+      import { TICKETS_CSV, UPTIME_CSV, computeReport, verify, TARGETS } from './compute.js';
+
+      const $ = (id) => document.getElementById(id);
+      const ticketsEl = $('tickets-input');
+      const uptimeEl = $('uptime-input');
+      const statusEl = $('report-status');
+      const outEl = $('report-out');
+
+      const esc = (s) =>
+        String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+      const pct = (n) => (n == null ? '—' : n.toFixed(2) + '%');
+      const min = (n) => (n == null ? '—' : n + ' min');
+      const mins = (n) => (n == null ? '—' : (Number.isInteger(n) ? n : n.toFixed(1)) + ' min');
+
+      const VERIFY_LABELS = {
+        ticketsOpened: 'Total tickets',
+        ticketsClosed: 'Tickets closed',
+        ticketsOpen: 'Tickets open',
+        slaMet: 'Tickets meeting SLA',
+        reopened: 'Reopened tickets',
+        priorityP1: 'Priority P1',
+        priorityP2: 'Priority P2',
+        priorityP3: 'Priority P3',
+        priorityP4: 'Priority P4',
+        medianFirstResponse: 'Median first response',
+        medianResolution: 'Median resolution (closed)',
+        uptimeRows: 'Monitored services',
+        totalDowntime: 'Total service downtime',
+        serviceIncidents: 'Service incidents',
+        weightedAvailabilityPct: 'Weighted availability',
+      };
+
+      function rows(obj) {
+        return Object.entries(obj)
+          .sort((a, b) => b[1] - a[1])
+          .map(([k, v]) => `<tr><td>${esc(k)}</td><td class="num">${v}</td></tr>`)
+          .join('');
+      }
+
+      function render() {
+        let report;
+        try {
+          report = computeReport(ticketsEl.value, uptimeEl.value);
+        } catch (e) {
+          statusEl.className = 'report-status fail';
+          statusEl.textContent = '⚠ Could not parse the exports — check the CSV rows.';
+          outEl.innerHTML = '';
+          return;
+        }
+
+        const checks = verify(report);
+        const failed = checks.filter((c) => !c.pass);
+
+        statusEl.className = 'report-status ' + (failed.length ? 'fail' : 'pass');
+        statusEl.textContent = failed.length
+          ? `⚠ ${failed.length} figure${failed.length > 1 ? 's' : ''} no longer reconcile against the published baseline.`
+          : `✓ All ${checks.length} figures reconcile. Every number recounted from the rows.`;
+
+        const lowest = [...report.services]
+          .filter((s) => s.availabilityPct != null)
+          .sort((a, b) => a.availabilityPct - b.availabilityPct)[0];
+
+        outEl.innerHTML = `
+          <div class="exec">
+            <h3>Executive summary</h3>
+            <p>
+              The team received <strong>${report.ticketsOpened} tickets</strong> and closed
+              <strong>${report.ticketsClosed}</strong>, leaving <strong>${report.ticketsOpen} open</strong>
+              at period end. SLA attainment was <strong>${pct(report.slaAttainmentPct)}</strong>
+              (${report.slaMet} of ${report.ticketsOpened}).
+            </p>
+            <p>
+              Across ${report.uptimeRows} monitored services, weighted availability was
+              <strong>${pct(report.weightedAvailabilityPct)}</strong>${
+                lowest
+                  ? `, with ${esc(lowest.service)} lowest at <strong>${pct(lowest.availabilityPct)}</strong>`
+                  : ''
+              }.
+            </p>
+            <p class="muted">
+              No conclusion is drawn about root cause, trend, satisfaction, or cost: those fields and
+              comparison periods were not supplied.
+            </p>
+          </div>
+
+          <h3>KPI snapshot</h3>
+          <table>
+            <thead><tr><th>Metric</th><th class="num">Result</th><th>Source</th></tr></thead>
+            <tbody>
+              <tr><td>Tickets opened</td><td class="num">${report.ticketsOpened}</td><td class="src">row count</td></tr>
+              <tr><td>Closed / open</td><td class="num">${report.ticketsClosed} / ${report.ticketsOpen}</td><td class="src">status field</td></tr>
+              <tr><td>Closure rate</td><td class="num">${pct(report.closureRatePct)}</td><td class="src">${report.ticketsClosed} / ${report.ticketsOpened}</td></tr>
+              <tr><td>SLA attainment</td><td class="num">${pct(report.slaAttainmentPct)}</td><td class="src">${report.slaMet} / ${report.ticketsOpened}</td></tr>
+              <tr><td>Reopen rate</td><td class="num">${pct(report.reopenRatePct)}</td><td class="src">${report.reopened} / ${report.ticketsClosed} closed</td></tr>
+              <tr><td>Median first response</td><td class="num">${mins(report.medianFirstResponse)}</td><td class="src">all tickets</td></tr>
+              <tr><td>Median resolution</td><td class="num">${mins(report.medianResolution)}</td><td class="src">closed tickets</td></tr>
+              <tr><td>Weighted availability</td><td class="num">${pct(report.weightedAvailabilityPct)}</td><td class="src">available / measured minutes</td></tr>
+              <tr><td>Service downtime</td><td class="num">${min(report.sumDowntime)}</td><td class="src">sum per service</td></tr>
+            </tbody>
+          </table>
+
+          <div class="grid2">
+            <div>
+              <h3>Tickets by priority</h3>
+              <table><thead><tr><th>Priority</th><th class="num">Tickets</th></tr></thead>
+                <tbody>${rows(report.byPriority)}</tbody></table>
+            </div>
+            <div>
+              <h3>Tickets by category</h3>
+              <table><thead><tr><th>Category</th><th class="num">Tickets</th></tr></thead>
+                <tbody>${rows(report.byCategory)}</tbody></table>
+            </div>
+          </div>
+
+          <h3>Availability &amp; incidents</h3>
+          <table>
+            <thead><tr><th>Service</th><th class="num">Availability</th><th class="num">Downtime</th><th class="num">Incidents</th></tr></thead>
+            <tbody>
+              ${report.services
+                .map(
+                  (s) =>
+                    `<tr><td>${esc(s.service)}</td><td class="num">${pct(s.availabilityPct)}</td><td class="num">${s.downtimeMin} min</td><td class="num">${s.incidents}</td></tr>`
+                )
+                .join('')}
+            </tbody>
+          </table>
+
+          <h3>Verification — live recount vs. published baseline</h3>
+          <table class="verify">
+            <thead><tr><th>Check</th><th class="num">Expected</th><th class="num">Live</th><th class="status">Status</th></tr></thead>
+            <tbody>
+              ${checks
+                .map(
+                  (c) =>
+                    `<tr class="${c.pass ? 'pass' : 'fail'}"><td>${esc(VERIFY_LABELS[c.key] || c.key)}</td><td class="num">${c.expected}</td><td class="num">${c.actual}</td><td class="status">${c.pass ? '✓ match' : '✗ drift'}</td></tr>`
+                )
+                .join('')}
+            </tbody>
+          </table>
+        `;
+      }
+
+      function loadDefaults() {
+        ticketsEl.value = TICKETS_CSV;
+        uptimeEl.value = UPTIME_CSV;
+        render();
+      }
+
+      let t;
+      const debounced = () => { clearTimeout(t); t = setTimeout(render, 150); };
+      ticketsEl.addEventListener('input', debounced);
+      uptimeEl.addEventListener('input', debounced);
+      $('reconcile-btn').addEventListener('click', render);
+      $('reset-btn').addEventListener('click', loadDefaults);
+
+      // Demonstrate the honesty layer: silently flip a closed ticket to open.
+      $('tamper-btn').addEventListener('click', () => {
+        const lines = ticketsEl.value.split('\n');
+        const i = lines.findIndex((l) => /,Closed,/.test(l));
+        if (i >= 0) {
+          lines[i] = lines[i].replace(',Closed,', ',Open,');
+          ticketsEl.value = lines.join('\n');
+        }
+        render();
+      });
+
+      loadDefaults();
+    </script>
+  </body>
+</html>
