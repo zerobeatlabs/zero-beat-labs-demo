@@ -3,15 +3,15 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Reconcile — live IT operations report demo | ZeroBeatLabs</title>
+    <title>Reconcile: live IT operations report demo | ZeroBeatLabs</title>
     <meta
       name="description"
-      content="Interactive demo: paste sanitized ticket and uptime exports and watch every figure recount live. The honesty layer flags any total that stops adding up — the difference between a defensible report and a generic AI summary."
+      content="Interactive demo: paste sanitized ticket and uptime exports and watch every figure recount live. The honesty layer flags any total that stops adding up, the difference between a defensible report and a generic AI summary."
     />
     <link rel="canonical" href="https://demo.zerobeatlabs.org/reconcile/" />
     <meta name="theme-color" content="#16181d" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Reconcile — live IT operations report demo" />
+    <meta property="og:title" content="Reconcile: live IT operations report demo" />
     <meta
       property="og:description"
       content="Edit sample exports and watch every number recount from the rows. Nothing is typed by hand; the verification panel turns red the instant a total stops reconciling."
@@ -178,7 +178,7 @@
     <main>
       <section class="hero">
         <div class="wrap">
-          <p class="eyebrow">Live demo — the honesty layer</p>
+          <p class="eyebrow">Live demo: the honesty layer</p>
           <h1>Watch a leadership report recount itself from the raw exports.</h1>
           <p class="lede">
             Edit the sanitized ticket and uptime exports on the left. Every figure on the
@@ -237,7 +237,8 @@
         <p>
           A ZeroBeatLabs demo &middot; method from the
           <a href="https://zerobeatlabs.org/#proof">public sample demonstration</a> &middot;
-          built by <a href="https://samjolley.com">Sam Jolley</a>
+          built by <a href="https://samjolley.com">Sam Jolley</a> &middot;
+          <a href="https://zerobeatlabs.org/privacy/">Privacy</a>
         </p>
       </div>
     </footer>
@@ -288,7 +289,7 @@
           report = computeReport(ticketsEl.value, uptimeEl.value);
         } catch (e) {
           statusEl.className = 'report-status fail';
-          statusEl.textContent = '⚠ Could not parse the exports — check the CSV rows.';
+          statusEl.textContent = '⚠ Could not parse the exports. Check the CSV rows.';
           outEl.innerHTML = '';
           return;
         }
@@ -370,7 +371,7 @@
             </tbody>
           </table>
 
-          <h3>Verification — live recount vs. published baseline</h3>
+          <h3>Verification: live recount vs. published baseline</h3>
           <table class="verify">
             <thead><tr><th>Check</th><th class="num">Expected</th><th class="num">Live</th><th class="status">Status</th></tr></thead>
             <tbody>
