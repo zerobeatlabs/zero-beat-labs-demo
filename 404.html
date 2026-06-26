@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Page not found | ZeroBeatLabs Demos</title>
+    <meta name="robots" content="noindex" />
+    <meta name="theme-color" content="#16181d" />
+    <style>
+      :root {
+        --ink: #16181d; --muted: #474e59; --accent: #1d4ed8;
+        --mono: ui-monospace, "Cascadia Code", Consolas, monospace;
+        --sans: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      }
+      * { box-sizing: border-box; }
+      body { margin: 0; font-family: var(--sans); color: var(--ink); line-height: 1.6; }
+      .wrap { max-width: 48rem; margin: 0 auto; padding: 0 1.5rem; }
+      .site-header { background: #16181d; color: #f5f7fa; }
+      .site-header .wrap { display: flex; justify-content: space-between; align-items: baseline; padding: 1rem 1.5rem; }
+      .site-name { font-family: var(--mono); font-weight: 700; color: #fff; text-decoration: none; }
+      .site-header a.back { color: #f5f7fa; text-decoration: none; font-size: 0.95rem; }
+      main { padding: 3rem 0; }
+      h1 { font-size: clamp(1.8rem, 4vw, 2.4rem); margin: 0 0 0.75rem; }
+      .lede { font-size: 1.15rem; color: var(--muted); max-width: 55ch; }
+      a { color: var(--accent); }
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="wrap">
+        <a class="site-name" href="https://zerobeatlabs.org">ZeroBeatLabs</a>
+        <a class="back" href="/">&larr; Demos</a>
+      </div>
+    </header>
+    <main>
+      <div class="wrap">
+        <h1>Page not found</h1>
+        <p class="lede">The page you requested does not exist or has moved.</p>
+        <p><a href="/">Back to the demos</a></p>
+      </div>
+    </main>
+  </body>
+</html>
